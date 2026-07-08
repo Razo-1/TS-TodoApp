@@ -9,10 +9,6 @@
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 [![GitHub](https://img.shields.io/badge/GitHub-Razo--1-181717?logo=github)](https://github.com/Razo-1/TS-TodoApp)
 
-## 📸 Demo
-
-<!-- Uncomment and add screenshot -->
-<!-- ![TS-TodoApp Preview](./screenshot.png) -->
 
 ## ✨ Features
 
