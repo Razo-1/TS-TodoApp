@@ -1,78 +1,66 @@
-import type { AnyAction, Dispatch, Reducer } from "redux";
-import { DELETE_DATA, GET_DATA,TOTAL_PAGE,NEXT_PAGE,ACTIV_TODO, EDIT_TODO } from "./serverType"
-import { API } from "../../API";
+import type { Dispatch } from "redux";
 import type { ThunkAction } from "redux-thunk";
+import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "..";
-import { deleteTask, getServerTask, pageTask } from "./serverTask";
+import { API } from "../../API";
 import { isActive,editHelper } from "../../Utils";
 import type { ITodo,combination } from "../../Types";
 
 
-const serverState : combination = {
+const initialState : combination = {
     data : [],
     limit : null,
     page : 1,
     check : 1,
 }
-
-const serverReducer : Reducer<combination,AnyAction> = (state = serverState,action) => {
-    switch(action.type){
-        case GET_DATA:
-            return {
-                ...state,
-                data : state.check === state.page ? [...action.payload,...state.data] : [...action.payload] ,
-                check : state.page
-            }
-        case DELETE_DATA:
-            return {
-                ...state,
-                data : state.data.filter(el => el.id !== action.payload),
-            }
-        case TOTAL_PAGE: 
-            return {
-                ...state,
-                limit : action.payload, 
-            }
-        case NEXT_PAGE:
-            return {
-                ...state,
-                page : action.payload,
-            }
-        case ACTIV_TODO:
-            return {
-                ...state,
-                data : isActive(action.payload,state.data)
-            }
-        case EDIT_TODO:
-            return{
-                ...state,
-                data : editHelper(action.id,action.payload,state.data)
-            }
-        default: 
-            return state
+const serverSlice = createSlice({
+    name : 'server',
+    initialState,
+    reducers : {
+        getDataAction : (state, action) => {
+            state.data = state.check === state.page 
+                ? [...action.payload, ...state.data] 
+                : [...action.payload];
+            state.check = state.page;
+        },
+        deleteDataAction: (state, action) => {
+            state.data = state.data.filter(el => el.id !== action.payload);
+        },
+        totalPageAction: (state, action) => {
+            state.limit = action.payload;
+        },
+        nextPageAction: (state, action) => {
+            state.page = action.payload;
+        },
+        activTodo: (state, action) => {
+            state.data = isActive(action.payload, state.data);
+        },
+        editTodo: (state, action) => {
+            state.data = editHelper(action.payload.id, action.payload.payload, state.data);
+        },
     }
-}
+})
 
 type AppThunk = ThunkAction<Promise<void>,RootState,unknown,any>
 
 const serverTodo = (start : number) : AppThunk => {
     return async (dispatch : Dispatch) => {
         const resource = await API.getData(10,start);
-        dispatch(getServerTask(resource));
+        dispatch(getDataAction(resource));
     }
 }
 
 const deleteTodo = (id : number) : AppThunk => {
     return async (dispatch : Dispatch) => {
         await API.deleteData(id);
-        dispatch(deleteTask(id));    
+        dispatch(deleteDataAction(id));    
     }
 }
 
 const paginationTodo = (limit : number ,start : number) : AppThunk => {
     return async (dispatch : Dispatch) => {
         const resource = await API.getData(limit,start);
-        dispatch(pageTask(resource.length));
+        dispatch(totalPageAction(resource.length));
         
     }
 }
@@ -83,6 +71,7 @@ const updateTodo = (id : number,chang : ITodo) : AppThunk => {
     }
 }
 
+const serverReducer = serverSlice.reducer;
 
-
+export const { getDataAction, deleteDataAction, totalPageAction, nextPageAction, activTodo, editTodo } = serverSlice.actions;
 export {serverReducer,serverTodo,deleteTodo,paginationTodo,updateTodo};

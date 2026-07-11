@@ -1,8 +1,7 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../../../Store"
-import { paginationTodo } from "../../../Store/ServerReducer";
-import { nextPageTask } from "../../../Store/ServerReducer/serverTask";
+import { nextPageAction, paginationTodo } from "../../../Store/ServerReducer";
 import './Paginatione.css'
 
 function Paginatione(){
@@ -14,7 +13,7 @@ function Paginatione(){
     },[dispatch]);
     
     let nextPage = (start : number) => {
-        dispatch(nextPageTask(start))
+        dispatch(nextPageAction(start))
     }
         
     return(

@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { updateTodo, deleteTodo } from "../../../Store/ServerReducer";
+import { updateTodo, deleteTodo, editTodo, activTodo } from "../../../Store/ServerReducer";
 import type { AppDispatch, RootState } from "../../../Store";
-import { activeTask, editTask } from "../../../Store/ServerReducer/serverTask";
 import EditTodoModal from "../EditableText/EditTodoModal";
 import type { propTask } from "../../../Types";
 import "./Task.css";
@@ -29,7 +28,7 @@ function Task({element}:propTask){
 
     const isActive = () => {
 
-        dispatch(activeTask(element.id));
+        dispatch(activTodo(element.id));
 
 
         const chang = data.find(
@@ -49,7 +48,7 @@ function Task({element}:propTask){
 
 
         dispatch(
-            editTask(newTitle,element.id)
+            editTodo({payload : newTitle,id : element.id})
         );
 
 

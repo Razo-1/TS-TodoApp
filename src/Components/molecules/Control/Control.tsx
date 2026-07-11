@@ -1,8 +1,8 @@
 import { useState, type ChangeEvent } from "react"
 import { useDispatch } from "react-redux";
-import { getServerTask } from "../../../Store/ServerReducer/serverTask";
 import type { AppDispatch } from "../../../Store";
 import type { ITodo } from "../../../Types";
+import { getDataAction } from "../../../Store/ServerReducer";
 import './Control.css';
 
 
@@ -19,7 +19,7 @@ function Control(){
         e.preventDefault();
         if(text.trim()){
             let recource : ITodo = { id : Date.now(),title : text,completed : false, userId : 1};
-            dispatch(getServerTask([recource]));
+            dispatch(getDataAction([recource]));
             setText('');
         }
     }

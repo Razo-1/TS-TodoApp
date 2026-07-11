@@ -4,7 +4,6 @@ import { TodoPage } from "../Components";
 import './App.css'
 
 function App(){
-
     
     return(
         <div>
